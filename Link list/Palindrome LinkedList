@@ -1,0 +1,196 @@
+Problem Statement: Palindrome LinkedList
+Problem Level: EASY
+Problem Description:
+You have been given a head to a singly linked list of integers. Write a function check to whether the list given is a 'Palindrome' or not.
+Input format :
+The first line contains an Integer 't' which denotes the number of test cases or queries to be run. Then the test cases follow.
+
+First and the only line of each test case or query contains the the elements of the singly linked list separated by a single space.
+
+Remember/Consider :
+While specifying the list elements for input, -1 indicates the end of the singly linked list and hence, would never be a list element.
+
+Output format :
+For each test case, the only line of output that print 'true' if the list is Palindrome or 'false' otherwise.
+
+Constraints :
+1 <= t <= 10^2
+0 <= M <= 10^5
+Time Limit: 1sec
+
+Where 'M' is the size of the singly linked list.
+
+Sample Input 1 :
+1
+9 2 3 3 2 9 -1
+
+Sample Output 1 :
+true
+
+Sample Input 2 :
+2
+0 2 3 2 5 -1
+-1
+
+Sample Output 2 :
+false
+true
+
+Explanation for the Sample Input 2 :
+For the first query, it is pretty intuitive that the the given list is not a palindrome, hence the output is 'false'.
+
+For the second query, the list is empty. An empty list is always a palindrome , hence the output is 'true'.
+
+
+
+
+
+
+class node {
+public:
+    int data;
+    node *next;
+
+    node(int data)
+    {
+        this->data=data;
+        next=nullptr;
+    }
+};
+
+
+
+#include<iostream>
+using namespace std;
+#include"Node.cpp"
+#include<stack>
+node* takeinput()
+{
+    int data;
+    cin>>data;
+    node* head=NULL;
+    node* tail=NULL;
+    while(data!=-1)
+    {
+        node* newnode=new node(data);
+        if(head==NULL)
+        {
+            head=newnode;
+            tail=newnode;
+        }
+        else{
+            tail->next=newnode;
+            tail=newnode;
+        }
+        cin>>data;
+    }
+    return head;
+}
+/*bool  is_Pallindrone(node* head)   ///this is the first approach for checking pallindrone but space complexity is o(n)
+{
+    stack<node *>st;
+    node* cur=head;
+    while(cur!=NULL)
+    {
+        st.push(cur);
+        cur=cur->next;
+    }
+    cur=head;
+    while(cur!=NULL)
+    {
+        node* temp=st.top();
+        if(cur->data!=temp->data)
+        {
+            return false;
+        }
+        cur=cur->next;
+        st.pop();
+    }
+    return true;
+
+}*/
+
+void print(node* head){
+    node* temp=head;
+    while(temp!=NULL)
+    {
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+    cout<<endl;
+}
+/*bool  is_Pallindrone(node** left,node* right) //this is also taken time complexity O(N) ans space complexity is O(N)
+{
+     if(right==NULL)
+      {
+         return 1;
+     }
+     bool t=is_Pallindrone(left,right->next);
+     if(t==false)
+     {
+         return false;
+     }
+     if((*left)->data!=right->data)
+     {
+         return false;
+     }
+     (*left)=(*left)->next;
+
+     return true;
+}*/
+bool  is_Pallindrone(node* head)      //this is the best way of solving problem time complexity->O(n) & space complexity is O(1)
+{
+    if(head->next==NULL)
+    {
+        return true;
+    }
+    node *fast=head,*slow=head,*last=NULL;
+        while(fast!=NULL&&fast->next!=NULL)
+        {
+            last=slow;
+           slow=slow->next;
+           fast=fast->next->next;
+        }
+       node* first=head;
+        last->next=NULL;
+        node *second=slow;
+
+         last=NULL;
+         while(second!=NULL)
+         {
+             node* temp=second->next;
+             second->next=last;
+             last=second;
+             second=temp;
+         }
+         second=last;
+         while(first!=NULL)
+         {
+             if(first->data!=second->data)
+             {
+                 return false;
+             }
+             first=first->next;
+             second=second->next;
+         }
+         return true;
+
+
+
+
+
+}
+
+int main()
+{
+    node* head=takeinput();
+    print(head);
+   // head=check_palidrome(head);
+   //head=printreverseorder(head);
+    //print(head);
+    cout<<is_Pallindrone(head);
+}
+
+
+
+
