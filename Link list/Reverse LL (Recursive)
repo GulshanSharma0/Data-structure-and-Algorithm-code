@@ -1,0 +1,180 @@
+
+/*
+
+Coding Problem
+
+
+Problem Statement: Reverse LL (Recursive)
+Problem Level: EASY
+Problem Description:
+Given a singly linked list of integers, reverse it using recursion and return the head to the modified list.
+Note :
+No need to print the list, it has already been taken care. Only return the new head to the list.
+
+Input format :
+The first line contains an Integer 't' which denotes the number of test cases or queries to be run. Then the test cases follow.
+
+The first and the only line of each test case or query contains the elements of the singly linked list separated by a single space.
+
+Remember/Consider :
+While specifying the list elements for input, -1 indicates the end of the singly linked list and hence, would never be a list element
+
+Output format :
+For each test case/query, print the elements of the updated singly linked list.
+
+Output for every test case will be printed in a seperate line.
+
+Constraints :
+1 <= t <= 10^2
+0 <= M <= 10^4
+Where M is the size of the singly linked list.
+
+Time Limit: 1sec
+
+Sample Input 1 :
+1
+1 2 3 4 5 6 7 8 -1
+
+Sample Output 1 :
+8 7 6 5 4 3 2 1
+
+Sample Input 2 :
+2
+10 -1
+10 20 30 40 50 -1
+
+Sample Output 2 :
+10 
+50 40 30 20 10
+
+
+
+class node {
+public:
+    int data;
+    node *next;
+
+    node(int data)
+    {
+        this->data=data;
+        next=nullptr;
+    }
+};
+
+
+
+#include<iostream>
+using namespace std;
+#include "Node.cpp"
+
+
+node* reverselinklist(node* head)                                                   // this is the best way for reverse linklist
+{
+    if(head==NULL||head->next==NULL)
+    {
+        return head;
+    }
+    node* newnode=reverselinklist(head->next);
+    node* tail=head->next;
+    tail->next=head;
+    head->next=NULL;
+    return newnode;
+
+}
+
+
+
+
+/*
+class pair1{
+public:
+    node *head;
+    node *tail;
+};
+pair1 reversell_better(node *head)
+{
+    if(head==NULL||head->next==NULL)
+    {
+        pair1 ans;
+        ans.head=head;
+        ans.tail=head;
+        return ans;
+    }
+    pair1 smallans=reversell_better(head->next);
+    smallans.tail->next=head;
+    head->next=NULL;
+    pair1 ans;
+    ans.head=smallans.head;
+    ans.tail=head;
+    return ans;
+}
+node* reversellbettter_2ndapproach(node* head)
+{
+    return reversell_better(head).head;
+}
+*/
+
+
+
+
+
+/*node* reversell_1tapproach(node* head)
+{
+    node* temp=head;
+    if(head==NULL || head->next==NULL)
+    {
+        return head;
+    }
+    node* newnode=reverse(head->next);
+
+    node* temp2=newnode;
+    while(temp2->next!=NULL)
+    {
+        temp2=temp2->next;
+    }
+     temp2->next=temp;
+     temp->next=NULL;
+     return newnode;
+
+}*/
+node* takeinput()
+{
+    int data;
+    cin>>data;
+    node* head=NULL;
+    node* tail=NULL;
+    while(data!=-1)
+    {
+        node* newnode=new node(data);
+        if(head==NULL)
+        {
+            head=newnode;
+            tail=newnode;
+        }
+        else{
+            tail->next=newnode;
+            tail=newnode;
+        }
+        cin>>data;
+    }
+    return head;
+}
+void print(node* head)
+{
+    node* temp=head;
+    while(temp!=NULL)
+    {
+
+        cout<<temp->data<<"->";
+        temp=temp->next;
+    }
+    cout<<endl;
+}
+int main()
+{
+    node* head=takeinput();
+    print(head);
+    node* ans = reverselinklist(head);
+    print(ans);
+
+}
