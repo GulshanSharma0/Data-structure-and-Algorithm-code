@@ -1,0 +1,81 @@
+//stack implementation
+
+#include<climits>
+#include<iostream>
+using namespace std;
+class stackusingarrays{
+    int *data;
+    int nextindex;
+    int capicity;
+public:
+    stackusingarrays(int totalsize)
+    {
+        data=new int[totalsize];
+        nextindex=0;
+        capicity=totalsize;
+    }
+    int size(){
+    return nextindex;
+    }
+    bool isempty(){
+    /*if(nextindex==0)
+    {
+        rreturn true;
+    }else{
+    return false;
+    }*/
+    return nextindex==0;
+    }
+
+    void push(int element){
+        if(nextindex==capicity)
+        {
+            cout<<"stack is full"<<endl;
+            return;
+        }
+        data[nextindex]=element;
+        nextindex++;
+    }
+    int pop(){
+        if(isempty())
+        {
+            return INT_MIN;
+        }
+        nextindex--;
+        return data[nextindex];
+    }
+    int top()
+    {
+        if(isempty())
+        {
+            return INT_MIN;
+        }
+        return data[nextindex-1];
+    }
+};
+
+
+
+
+#include<iostream>
+#include "stack_implementation_using_arrays.cpp"             // this is the header file of only my computer because i created this file 
+using namespace std;
+int main()
+{
+     stackusingarrays s(4);
+
+     s.push(1);
+     s.push(2);
+     s.push(3);
+     s.push(4);
+     s.push(5);
+
+     cout<<s.top()<<endl;
+     cout<<s.size()<<endl;
+     cout<<s.pop()<<endl;
+     cout<<s.pop()<<endl;
+     cout<<s.pop()<<endl;
+     cout<<s.isempty()<<endl;
+
+
+}
