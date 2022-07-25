@@ -1,0 +1,80 @@
+
+#include<climits>
+class stackusingarrays{
+    int *data;
+    int nextindex;
+    int capicity;
+public:
+    stackusingarrays() {
+        data=new int[4];
+        nextindex=0;
+        capicity=4;
+    }
+    int size(){
+    return nextindex;
+    }
+    bool isempty(){
+    /*if(nextindex==0)
+    {
+        rreturn true;
+    }else{
+    return false;
+    }*/
+    return nextindex==0;
+    }
+    void push(int element) {
+        if(nextindex==capicity) {
+            int *newData= new int[2*capicity];
+            for(int i=0;i<capicity;i++)
+            {
+                newData[i] = data[i];
+            }
+            capicity*=2;
+            delete [] data;
+            data=newData;
+       }
+       data[nextindex]=element;
+       nextindex++;
+    }
+
+    int pop(){
+        if(isempty())
+        {
+            return INT_MIN;
+        }
+        nextindex--;
+        return data[nextindex];
+    }
+    int top()
+    {
+        if(isempty())
+        {
+            return INT_MIN;
+        }
+        return data[nextindex-1];
+    }
+};
+
+
+#include<iostream>
+#include "stack_implementation_using_arrays.cpp"
+using namespace std;
+int main()
+{
+     stackusingarrays s;
+     s.push(1);
+     s.push(2);
+     s.push(3);
+     s.push(4);
+     s.push(5);
+
+     cout<<s.top()<<endl;
+     cout<<s.size()<<endl;
+     cout<<s.pop()<<endl;
+     cout<<s.pop()<<endl;
+     cout<<s.pop()<<endl;
+     cout<<s.isempty()<<endl;
+     return 0;
+
+
+}
