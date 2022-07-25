@@ -1,0 +1,48 @@
+template<typename T,typename V>
+class pair1 {
+    T x;
+    V y;
+public:
+    void setX(T x) {
+        this->x=x;
+    }
+    void setY(V y) {
+        this->y=y;
+    }
+    T getX() {
+        return x;
+    }
+    V getY() {
+        return y;
+    }
+};
+
+
+#include<iostream>
+using namespace std;
+#include "templete_pair.cpp"
+int main()
+{
+    /*pair1<int>pt;
+    pt.setX(4);
+    pt.setY(5);
+    cout<<pt.getX()<<" "<<pt.getY()<<endl;
+    pair1<double>pr;
+    pr.setX(88.2);
+    pr.setY(22.3);
+    cout<<pr.getX()<<" "<<pr.getY()<<endl;
+*/
+    pair1<int,double>prt;
+    prt.setY(87);
+    prt.setX(86.43);
+    cout<<prt.getY()<<" "<<prt.getX()<<endl;
+    pair1<pair1<int,double>,int>p3;
+    p3.setY(25);
+    pair1<int,double>p4;
+    p4.setX(81);
+    p4.setY(82.44);
+    p3.setX(p4);
+    cout<<p3.getX().getX()<<" "<<p3.getX().getY()<<" "<<p3.getY()<<endl;
+}
+
+
