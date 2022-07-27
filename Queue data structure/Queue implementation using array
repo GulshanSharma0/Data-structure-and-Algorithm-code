@@ -1,0 +1,103 @@
+// this is queue implementationn that is statically
+
+#include<iostream>
+using namespace std;
+template<typename T>
+class Queue{
+    int nextindex;
+    int firstindex;
+    int size;
+    T *data;
+    int capicity;
+public:
+    Queue(T sizeofarray) {
+        data=new T[sizeofarray];
+        firstindex=-1;
+        nextindex=0;
+        size=0;
+        capicity=sizeofarray;
+    }
+    int getSize() {
+        return size;
+    }
+    bool isEmpty() {
+            return size==0;
+    }
+    T enqueue(T element) {
+        if(size==capicity) {
+            cout<<" stack is full"<<endl;
+            return 0;
+        }
+        data[nextindex]=element;
+        nextindex=(nextindex+1)%capicity;
+        if(firstindex==-1){
+            firstindex=0;
+        }
+
+        size++;
+
+    }
+    T front() {
+        if(isEmpty())
+        {
+            cout<<"stack is Empty"<<endl;
+            return 0;
+        }
+        return data[firstindex];
+    }
+    T deque(){
+        if(isEmpty())
+        {
+            cout<<"stack is Empty"<<endl;
+            return 0;
+        }
+        T temp=data[firstindex];
+        firstindex=(firstindex+1)%capicity;
+        if(firstindex==capicity)
+        {
+            firstindex=-1;
+            nextindex=0;
+        }
+        size--;
+        return temp;
+    }
+
+
+};
+
+// this code for check work correctly or not
+
+#include<iostream>
+using namespace std;
+#include "Queue_implementation_Using_Arrays.cpp"
+int main()
+{
+    Queue<int>s(5);
+    s.enqueue(10);
+    s.enqueue(20);
+    s.enqueue(30);
+    s.enqueue(40);
+    s.enqueue(50);
+    s.enqueue(60);
+    s.enqueue(70);
+
+    cout<<s.front()<<endl;
+    cout<<s.getSize()<<endl;
+    cout<<s.isEmpty()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.front()<<endl;
+    cout<<s.getSize()<<endl;
+    cout<<s.isEmpty()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.getSize()<<endl;
+    cout<<s.isEmpty()<<endl;
+
+
+
+
+}
+
