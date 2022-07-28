@@ -1,0 +1,118 @@
+ // queue impilementation using arrays dynamically 
+ 
+  #include<iostream>
+    using namespace std;
+    template<typename T>
+    class Queue{
+        int nextindex;
+        int firstindex;
+        int size;
+        T *data;
+        int capicity;
+    public:
+        Queue() {
+            data=new T[5];
+            firstindex=-1;
+            nextindex=0;
+            size=0;
+            capicity=5;
+        }
+        int getSize() {
+            return size;
+        }
+        bool isEmpty() {
+                return size==0;
+        }
+        T enqueue(T element) {
+            if(size==capicity) {
+               T *newdata=new T[2*capicity];
+               int j=0;
+               for(int i=firstindex;i<capicity;i++){
+                    newdata[j]=data[i];
+                    j++;
+               }
+               for(int i=0;i<firstindex;i++)
+               {
+                   newdata[j]=data[i];
+                   j++;
+               }
+               delete [] data;
+               data=newdata;
+               firstindex=0;
+               nextindex=capicity;
+               capicity=2*capicity;
+
+               // cout<<" stack is full"<<endl;
+               // return 0;
+            }
+            data[nextindex]=element;
+            nextindex=(nextindex+1)%capicity;
+            if(firstindex==-1){
+                firstindex=0;
+            }
+
+            size++;
+
+        }
+        T front() {
+            if(isEmpty())
+            {
+                cout<<"stack is Empty"<<endl;
+                return 0;
+            }
+            return data[firstindex];
+        }
+        T deque(){
+            if(isEmpty())
+            {
+                cout<<"stack is Empty"<<endl;
+                return 0;
+            }
+            T temp=data[firstindex];
+            firstindex=(firstindex+1)%capicity; 
+            if(firstindex==capicity)
+            {
+                firstindex=-1;
+                nextindex=0;
+            }
+            size--;
+            return temp;
+        }
+
+
+    };
+    
+    
+#include<iostream>
+using namespace std;
+#include "Queue_implementation_Using_Arrays.cpp"      //this is the file name
+int main()
+{
+    Queue<int>s;
+    s.enqueue(10);
+    s.enqueue(20);
+    s.enqueue(30);
+    s.enqueue(40);
+    s.enqueue(50);
+    s.enqueue(60);
+    s.enqueue(70);
+
+    cout<<s.front()<<endl;
+    cout<<s.getSize()<<endl;
+    cout<<s.isEmpty()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.front()<<endl;
+    cout<<s.getSize()<<endl;
+    cout<<s.isEmpty()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.getSize()<<endl;
+    cout<<s.isEmpty()<<endl;
+
+
+
+
+}
