@@ -1,0 +1,102 @@
+// queue implementation using link list
+
+#include<iostream>
+template<typename T>
+class Node{
+public:
+    Node<T> *next;
+    T data;
+    Node(T data)
+    {
+        this->data=data;
+        next=NULL;
+    }
+};
+template<typename T>
+class Queue{
+     Node<T>* head;
+     int size;
+     Node<T>* tail;
+ public:
+    Queue(){
+        head=NULL;
+        tail=NULL;
+        size=0;
+    }
+   int getsize()
+   {
+        return size;
+   }
+   bool isempty(){
+       return size==0;
+   }
+   void enqueue(T element){
+       Node<T>* newnode=new Node<T>(element);
+       if(head==NULL)
+       {
+           head=newnode;
+           tail=newnode;
+           size++;
+       }
+       else{
+          tail->next=newnode;
+          tail=newnode;
+          size++;
+       }
+   }
+   T deque(){
+       if(isempty())
+       {
+           return 0;
+       }
+       T Temp=head->data;
+       Node<T>* tempn=head;
+       head=head->next;
+       delete tempn;
+       size--;
+       return Temp;
+   }
+   T front()
+   {
+       if(isempty()){
+            return 0;
+       }
+       return head->data;
+   }
+};
+
+#include<iostream>
+using namespace std;
+#include "QueueImplementationUsingLinklist.cpp"         // this is the header file
+int main()
+{
+    Queue<int>s;
+    s.enqueue(10);
+    s.enqueue(20);
+    s.enqueue(30);
+    s.enqueue(40);
+    s.enqueue(50);
+    s.enqueue(60);
+    s.enqueue(70);
+
+    cout<<s.front()<<endl;
+    cout<<s.getsize()<<endl;
+    cout<<s.isempty()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.front()<<endl;
+    cout<<s.getsize()<<endl;
+    cout<<s.isempty()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.deque()<<endl;
+    cout<<s.getsize()<<endl;
+    cout<<s.isempty()<<endl;
+
+
+
+
+}
+
+
