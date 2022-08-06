@@ -1,0 +1,43 @@
+/*Tree Take Input and print complicated way 
+this is not a level way this is complecated way so if u want to seen level way take input code go
+to the file:-(tree take input level way)*/
+
+
+
+
+#include<iostream>
+#include<vector>
+#include "TreeNode.cpp"
+using namespace std;
+TreeNode<int>* takeinput() {
+    int rootdata;
+    cout<<"Enter Data"<<endl;
+    cin>>rootdata;
+    TreeNode<int> *root =new TreeNode<int>(rootdata);
+    int n;
+    cout<<"Enter num if children of "<<rootdata<<endl;
+    cin>>n;
+    for(int i=0;i<n;i++){
+        TreeNode<int> *child=takeinput();
+        root->children.push_back(child);
+    }
+    return root;
+}
+void printTree(TreeNode<int>* root) {
+    if(root==NULL){
+        return;
+    }
+    cout<<root->data<<":";
+    for(int i=0;i<root->children.size();i++) {
+        cout<<root->children[i]->data<<",";
+    }
+    cout<<endl;
+    for(int i=0;i<root->children.size();i++) {
+        printTree(root->children[i]);
+    }
+
+}
+int main(){
+    TreeNode<int>* root=takeinput();
+    printTree(root);
+}
