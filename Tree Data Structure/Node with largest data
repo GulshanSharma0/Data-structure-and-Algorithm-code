@@ -1,0 +1,99 @@
+/*
+
+Coding Problem
+Problem Statement: Node with largest data
+Problem Level: MEDIUM
+Problem Description:
+Given a generic tree, find and return the node with maximum data. You need to return the node which is having maximum data.
+Return null if tree is empty.
+Input format :
+The first line of input contains data of the nodes of the tree in level order form. The order is: data for root node, number of children to root node, data of each of child nodes and so on and so forth for each node. The data of the nodes of the tree is separated by space.
+
+Output Format :
+The first and only line of output contains the data of the node with largest data in the given tree.
+
+Constraints:
+Time Limit: 1 sec
+
+Sample Input 1:
+10 3 20 30 40 2 40 50 0 0 0 0
+
+Sample Output 1:
+50
+
+*/
+
+
+#include<vector>
+using namespace std;
+template <typename T>
+class TreeNode{
+    public:
+        T data;
+        vector<TreeNode<T>*> children;
+        TreeNode<T> (T data){
+            this->data=data;
+        }
+};
+
+
+#include<iostream>
+#include<queue>
+using namespace std;
+#include "TreeNode.cpp"
+TreeNode<int>* takeInputLevelWise() {
+    int rootdata;
+    cout<<"Enter root data"<<endl;
+    cin>>rootdata;
+    TreeNode<int>* root = new TreeNode<int>(rootdata);
+    queue<TreeNode<int>*> pendingNodes;
+    pendingNodes.push(root);
+    while(pendingNodes.size()!=0) {
+        TreeNode<int>* front= pendingNodes.front();
+        pendingNodes.pop();
+        cout<<"Enter Num of children of "<<front->data<<endl;
+        int numchild;
+        cin>>numchild;
+        for(int i=0;i<numchild;i++) {
+             int childData;
+             cout<<"Enter "<<i<<"th child of "<<front->data<<endl;
+             cin>>childData;
+             TreeNode<int>* child=new TreeNode<int>(childData);
+             front->children.push_back(child);
+             pendingNodes.push(child);
+        }
+    }
+    return root;
+
+}
+int NodeWithLargest(TreeNode<int>* root) {
+    static int ans=1;
+    if(ans<root->data){
+        ans=root->data;
+    }
+    for(int i=0;i<root->children.size();i++){
+       NodeWithLargest(root->children[i]);
+    }
+    return ans;
+}
+void printTreeLevelWise(TreeNode<int>* root) {
+    queue<TreeNode<int>*> pendingNodes;
+    pendingNodes.push(root);
+    while(pendingNodes.size()!=0){
+        TreeNode<int>* front=pendingNodes.front();
+        pendingNodes.pop();
+        cout<<front->data<<":";
+        for(int i=0;i<front->children.size();i++){
+            cout<<front->children[i]->data<<",";
+            pendingNodes.push(front->children[i]);
+        }
+        cout<<endl;
+    }
+}
+int main() {
+    TreeNode<int>* root=takeInputLevelWise();
+    printTreeLevelWise(root);
+    cout<<NodeWithLargest(root); 
+
+}
+
