@@ -1,0 +1,85 @@
+//10 3 1 2 3 2 4 5 1 6 1 7 1 8 0 0 0 0
+//10 3 20 30 40 2 400 50 0 0 0 0
+
+#include<vector>
+using namespace std;
+template <typename T>
+class TreeNode{
+    public:
+        T data;
+        vector<TreeNode<T>*> children;
+        TreeNode<T> (T data){
+            this->data=data;
+        } 
+};
+
+#include<iostream>
+using namespace std;
+#include<queue>
+#include"TreeNode.cpp"
+TreeNode<int>* takeinput(){
+    int rootdata;
+    cout<<"Enter root data"<<endl;
+    cin>>rootdata;
+    TreeNode<int>* root=new TreeNode<int>(rootdata);
+    queue<TreeNode<int>*>pendingNodes;
+    pendingNodes.push(root);
+    while(pendingNodes.size()!=0){
+        TreeNode<int>* front=pendingNodes.front();
+        pendingNodes.pop();
+        cout<<"Enter number of children "<<front->data<<endl;
+        int numchild;
+        cin>>numchild;
+        for(int i=0;i<numchild;i++){
+            int childdata;
+            cout<<"Enter "<<i<<"th child of "<<front->data<<endl;
+            cin>>childdata;
+            TreeNode<int>* child = new TreeNode<int>(childdata);
+            front->children.push_back(child);
+            pendingNodes.push(child); 
+        }
+    }
+    return root;
+}
+void printPostOrder(TreeNode<int>* root){
+    if(root==NULL){
+        return;
+    }
+    for(int i=0;i<root->children.size();i++){
+       printPostOrder(root->children[i]);
+    }
+    cout<<root->data<<" ";
+
+}
+void printPreOrder(TreeNode<int>* root){
+    if(root==NULL){
+        return;
+    }
+    cout<<root->data<<" ";
+    for(int i=0;i<root->children.size();i++){
+        printPreOrder(root->children[i]);
+    }
+}
+void printTreeLevelWise(TreeNode<int>* root) {
+    queue<TreeNode<int>*> pendingNodes;
+    pendingNodes.push(root);
+    while(pendingNodes.size()!=0){
+        TreeNode<int>* front=pendingNodes.front();
+        pendingNodes.pop();
+        cout<<front->data<<":";
+        for(int i=0;i<front->children.size();i++){
+            cout<<front->children[i]->data<<",";
+            pendingNodes.push(front->children[i]);
+        }
+        cout<<endl;
+    }
+}
+
+int main(){
+    TreeNode<int>* root=takeinput();
+    printTreeLevelWise(root);
+    printPreOrder(root);
+    cout<<endl;
+    printPostOrder(root);
+
+}
