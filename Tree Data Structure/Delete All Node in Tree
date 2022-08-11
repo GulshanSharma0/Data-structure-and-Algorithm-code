@@ -1,0 +1,76 @@
+//Delete All Node In Tree
+
+//10 3 1 2 3 2 4 5 1 6 1 7 1 8 0 0 0 0
+
+
+#include<vector>
+using namespace std;
+template <typename T>
+class TreeNode{
+    public:
+        T data;
+        vector<TreeNode<T>*> children;
+        TreeNode<T> (T data) {
+            this->data=data;
+        }
+        ~TreeNode(){                                                 //first way delete all node using destructor
+            for(int i=0;i<children.size();i++){
+                delete children[i];
+            }
+        } 
+};
+#include<iostream>
+using namespace std;
+#include<queue>
+#include "TreeNode.cpp"
+TreeNode<int>* takeinput(){
+    int rootdata;
+    cout<<"Enter root data "<<endl;
+    cin>>rootdata;
+    TreeNode<int>* root=new TreeNode<int>(rootdata);
+    queue<TreeNode<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        TreeNode<int>* front= pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter number of children"<<front->data<<endl;
+        int numchild;
+        cin>>numchild;
+        for(int i=0;i<numchild;i++){
+            int childdata;
+            cout<<"Enter "<<i<<"th child of "<<front->data<<endl;
+            cin>>childdata;
+            TreeNode<int>* child=new TreeNode<int>(childdata);
+            front->children.push_back(child);
+            pendingnodes.push(child);
+        }
+    }
+    return root;
+
+}
+void printTree(TreeNode<int>* root){
+    queue<TreeNode<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        TreeNode<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        for(int i=0;i<front->children.size();i++){
+            cout<<front->children[i]->data<<",";
+            pendingnodes.push(front->children[i]);
+        }
+        cout<<endl;
+    }
+}
+void deleteTreeNode(TreeNode<int>* root){                                   //second way delete using function
+    for(int i=0;i<root->children.size();i++){
+        deleteTreeNode(root->children[i]);
+    }
+    delete root;
+}
+int main(){
+     TreeNode<int>* root=takeinput();
+     printTree(root);
+     delete root;                                                         //first way using destructor
+     //deleteTreeNode(root);                                              //second way using function
+}
