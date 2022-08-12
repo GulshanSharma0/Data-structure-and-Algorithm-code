@@ -1,0 +1,121 @@
+/**
+
+Chapter Assignment
+Problem Statement: Node with maximum child sum
+Problem Level: MEDIUM
+Problem Description:
+Given a generic tree, find and return the node for which sum of its data and data of all its child nodes is maximum. In the sum, data of the node and data of its immediate child nodes has to be taken.
+Input format :
+The first line of input contains data of the nodes of the tree in level order form. The order is: data for root node, number of children to root node, data of each of child nodes and so on and so forth for each node. The data of the nodes of the tree is separated by space.
+
+Output format :
+The first and only line of output contains the data of the node with maximum sum, as described in the task.
+
+Constraints:
+Time Limit: 1 sec
+
+Sample Input 1 :
+5 3 1 2 3 1 15 2 4 5 1 6 0 0 0 0
+
+Sample Output 1 :
+1
+
+**/
+
+
+
+#include<vector>
+using namespace std;
+template <typename T>
+class TreeNode{
+    public:
+        T data;
+        vector<TreeNode<T>*> children;
+        TreeNode<T> (T data) {
+            this->data=data;
+        }
+        ~TreeNode(){
+            for(int i=0;i<children.size();i++){
+                delete children[i];
+            }
+        } 
+};
+
+
+
+#include<iostream>
+#include<queue>
+#include "TreeNode.cpp"
+using namespace std;
+TreeNode<int>* TakeInput(){
+    int rootdata;
+    cout<<"Enter root data "<<endl;
+    cin>>rootdata;
+    TreeNode<int>* root=new TreeNode<int>(rootdata);
+    queue<TreeNode<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        TreeNode<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter number of children of "<<front->data<<endl;
+        int numchild;
+        cin>>numchild;
+        for(int i=0;i<numchild;i++) {
+            int childdata;
+            cout<<"Enter "<<i<<"th child of data of "<<front->data<<endl;
+            cin>>childdata;
+            TreeNode<int>* child=new TreeNode<int>(childdata);
+            front->children.push_back(child);
+            pendingnodes.push(child);
+        }
+    }
+    return root;
+}
+void PrintTree(TreeNode<int>* root){
+    queue<TreeNode<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        TreeNode<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        for(int i=0;i<front->children.size();i++){
+            cout<<front->children[i]->data<<",";
+            pendingnodes.push(front->children[i]);
+        }
+        cout<<endl;
+    }
+}
+int sumofnode(TreeNode<int>* root){
+    if(root==nullptr){
+        return 0;
+    }
+    int sum=root->data;
+    for(int i=0;i<root->children.size();i++){
+        sum+=root->children[i]->data;
+    }
+    return sum;
+}
+TreeNode<int>* NodeWithMaximum(TreeNode<int>* root){
+    if(root==nullptr){
+        return 0;
+    }   
+    TreeNode<int>* result = root;
+     int maxsum=sumofnode(root);
+    for(int i=0;i<root->children.size();i++){
+         TreeNode<int>* temp = NodeWithMaximum(root->children[i]);
+         int sum=sumofnode(temp);
+         if(sum>maxsum){
+            result=temp;
+            maxsum=sum;
+         }
+    }
+    return result;
+}
+int main(){
+    TreeNode<int>* root=TakeInput();
+    PrintTree(root);
+    cout<<sumofnode(root)<<endl;;
+    TreeNode<int>* ans=NodeWithMaximum(root);
+     cout<<ans->data<<endl;
+    delete root;
+}
