@@ -1,0 +1,123 @@
+
+Problem Statement: Second Largest Element In Tree
+Problem Level: MEDIUM
+Problem Description:
+Given a generic tree, find and return the node with second largest value in given tree.
+Note: Return NULL if no node with required value is present.
+Input format :
+The first line of input contains data of the nodes of the tree in level order form. The order is: data for root node, number of children to root node, data of each of child nodes and so on and so forth for each node. The data of the nodes of the tree is separated by space.
+
+Output Format :
+The first and only line of output contains data of the node with second largest data.
+
+Constraints:
+Time Limit: 1 sec
+
+Sample Input 1 :
+10 3 20 30 40 2 40 50 0 0 0 0
+
+Sample Output 1 :
+40
+
+
+
+#include<vector>
+using namespace std;
+template <typename T>
+class TreeNode{
+    public:
+        T data;
+        vector<TreeNode<T>*> children;
+        TreeNode<T> (T data) {
+            this->data=data;
+        }
+        ~TreeNode(){
+            for(int i=0;i<children.size();i++){
+                delete children[i];
+            }
+        } 
+};
+
+
+#include<iostream>
+using namespace std;
+#include "TreeNode.cpp"
+#include<queue>
+TreeNode<int>* takeinput(){
+    int rootdata;
+    cout<<"Enter root data "<<endl;
+    cin>>rootdata;
+    TreeNode<int>* root=new TreeNode<int>(rootdata);
+    queue<TreeNode<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        TreeNode<int>* front= pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter number of children"<<front->data<<endl;
+        int numchild;
+        cin>>numchild;
+        for(int i=0;i<numchild;i++){
+            int childdata;
+            cout<<"Enter "<<i<<"th child of "<<front->data<<endl;
+            cin>>childdata;
+            TreeNode<int>* child=new TreeNode<int>(childdata);
+            front->children.push_back(child);
+            pendingnodes.push(child);
+        }
+    }
+    return root;
+}
+TreeNode<int>* findSecondLargest(TreeNode<int>* root){
+    if(root==nullptr){
+        return nullptr;
+    }
+    int childcount=root->children.size();
+    if(childcount==0){
+        return nullptr;
+    }
+    TreeNode<int> *largest=root,*secondlargest=root->children[0];
+    if(largest->data<secondlargest->data){
+        secondlargest=root;
+        largest=root->children[0];
+    }
+    queue<TreeNode<int>*>q;
+    q.push(root);
+    while(q.size()!=0){
+        TreeNode<int>* curr=q.front();
+        q.pop();
+        childcount=curr->children.size();
+        for(int i=0;i<childcount;i++){
+            q.push(curr->children[i]);
+            if(curr->children[i]->data>secondlargest->data){
+                if(curr->children[i]->data>largest->data){
+                    secondlargest=largest;
+                    largest=curr->children[i];
+                }
+                else{
+                    secondlargest=curr->children[i];
+                }
+            }
+        }
+    }
+    return secondlargest;
+}
+void printTree(TreeNode<int>* root){
+    queue<TreeNode<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        TreeNode<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        for(int i=0;i<front->children.size();i++){
+            cout<<front->children[i]->data<<",";
+            pendingnodes.push(front->children[i]);
+        }
+        cout<<endl;
+    }
+}
+int main(){
+    TreeNode<int>* root=takeinput();
+    printTree(root);
+    TreeNode<int>* ans=findSecondLargest(root);
+    cout<<ans->data;
+}
