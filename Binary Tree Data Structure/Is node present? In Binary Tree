@@ -1,0 +1,129 @@
+//
+Problem Statement: Is node present?
+Problem Level: EASY
+Problem Description:
+For a given Binary Tree of type integer and a number X, find whether a node exists in the tree with data X or not.
+Input Format:
+The first and the only line of input will contain the node data, all separated by a single space. Since -1 is used as an indication whether the left or right node data exist for root, it will not be a part of the node data.
+
+Output Format:
+The only line of output prints 'true' or 'false'.
+
+Note:
+You are not required to print anything explicitly. It has already been taken care of.
+
+Constraints:
+1 <= N <= 10^5
+Where N is the total number of nodes in the binary tree.
+
+Time Limit: 1 sec
+
+Sample Input 1:
+8 3 10 1 6 -1 14 -1 -1 4 7 13 -1 -1 -1 -1 -1 -1 -1
+7
+
+Sample Output 1:
+true
+
+Sample Input 2:
+2 3 4 -1 -1 -1 -1
+10
+
+Sample Output 2:
+false
+
+//
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+#include<iostream>
+using namespace std;
+#include<queue>
+void PrintBinaryTreeLevelWise(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    queue<BinaryTree<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        if(front->left!=nullptr){
+            cout<<"L"<<front->left->data;
+            pendingnodes.push(front->left);
+        }
+        if(front->right!=nullptr){
+            cout<<"R"<<front->right->data;
+            pendingnodes.push(front->right);
+        }
+        cout<<endl;
+    }
+}
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+bool isNodePresent(BinaryTree<int>* root,int k) {
+    //For a given Binary Tree of type integer and a number X, find whether a node exists in the tree with data X or not
+    if(root==nullptr){
+        return 0;
+    }
+    if(root->data==k){
+        return true;
+    }
+    bool res1=isNodePresent(root->left,k);
+    if(res1){
+        return true;
+    }
+    bool res2=isNodePresent(root->right,k);
+    return res2;
+}
+int main(){
+    BinaryTree<int>* root=takeinputlevelwise();
+    PrintBinaryTreeLevelWise(root);
+    int k;
+    cin>k;
+    cout<<isNodePresent(root,k);
+  }
