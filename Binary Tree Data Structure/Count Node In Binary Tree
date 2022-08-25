@@ -82,3 +82,9 @@ int countNodesInBinaryTree(BinaryTree<int>* root){               //countnode in 
     }
     return 1+countNodesInBinaryTree(root->left)+countNodesInBinaryTree(root->right);
 }
+int main(){
+BinaryTree<int>* root=takeinputlevelwise();
+    PrintBinaryTreeLevelWise(root);
+    cout<<"nodes="<<countNodesInBinaryTree(root)<<endl;
+    delete root;
+    }
