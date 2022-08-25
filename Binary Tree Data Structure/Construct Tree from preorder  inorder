@@ -1,0 +1,138 @@
+/*
+Coding Problem
+Problem Statement: Construct Tree from preorder  inorder
+Problem Level: MEDIUM
+Problem Description:
+For a given preorder and inorder traversal of a Binary Tree of type integer stored in an array/list, create the binary tree using the given two arrays/lists. You just need to construct the tree and return the root.
+Note:
+Assume that the Binary Tree contains only unique elements.
+
+Input Format:
+The first line of input contains an integer N denoting the size of the list/array. It can also be said that N is the total number of nodes the binary tree would have.
+
+The second line of input contains N integers, all separated by a single space. It represents the preorder-traversal of the binary tree.
+
+The third line of input contains N integers, all separated by a single space. It represents the inorder-traversal of the binary tree.
+
+Output Format:
+The given input tree will be printed in a level order fashion where each level will be printed on a new line. 
+Elements on every level will be printed in a linear fashion. A single space will separate them.
+
+Constraints:
+1 <= N <= 10^4
+Where N is the total number of nodes in the binary tree.
+
+Time Limit: 1 sec
+
+Sample Input 1:
+7
+1 2 4 5 3 6 7 
+4 2 5 1 6 3 7
+
+Sample Output 1:
+1 
+2 3 
+4 5 6 7
+
+Sample Input 2:
+6
+5 6 2 3 9 10 
+2 6 3 9 5 10
+
+Sample Output 2:
+5 
+6 10 
+2 3 
+9
+
+
+*/
+
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+#include<iostream>
+using namespace std;
+#include "BinaryTreeclass.cpp"
+#include<queue>
+//  1 2 3 4 5 6 7 -1 -1 -1 -1 8 9 -1 -1 -1 -1 -1 -1 
+void PrintBinaryTreeLevelWise(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    queue<BinaryTree<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        if(front->left!=nullptr){
+            cout<<"L"<<front->left->data;
+            pendingnodes.push(front->left);
+        }
+        if(front->right!=nullptr){
+            cout<<"R"<<front->right->data;
+            pendingnodes.push(front->right);
+        }
+        cout<<endl;
+    }
+}
+BinaryTree<int>* BuildTreeHelper(int *pre,int* in,int sin,int Ein,int spre,int Epre){
+     if(sin>Ein){
+        return nullptr;
+     }
+     int rootdata=pre[spre];
+     int rootIndex=-1;
+     for(int i=sin;i<=Ein;i++){
+        if(in[i]==rootdata){
+            rootIndex=i;
+            break;
+        }
+     }
+     int LinS=sin;                   //Left inorder start
+     int LinE=rootIndex-1;           //Left in Order end
+     int LpreS=spre+1;               //left preOrder start 
+     int LpreE=LinE-LinS+LpreS;      //Left preorder End
+     int RinS=rootIndex+1;           //Right Inorder Start
+     int RinE=Ein;                   // Right inorder End
+     int RpreS=LpreE+1;              // Right Preorder Start
+     int RpreE=Epre;                 //Right Preorder End
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     root->left=BuildTreeHelper(pre,in,LinS,LinE,LpreS,LpreE);
+     root->right=BuildTreeHelper(pre,in,RinS,RinE,RpreS,RpreE);
+     return root; 
+
+}
+BinaryTree<int>* BuildTree(int *pre,int *inorder,int prelength,int inlength){
+    return BuildTreeHelper(pre,inorder,0,inlength-1,0,prelength-1);
+}
+int main(){
+    int length;
+    cout<<"Enter Length of the array "<<endl;
+    cin>>length;
+    int arr1[length];
+    int arr2[length];
+    for(int i=0;i<length;i++){
+        cin>>arr1[i];
+    }
+    for(int i=0;i<length;i++){
+        cin>>arr2[i];
+    }
+    BinaryTree<int>* root=BuildTree(arr1,arr2,length,length);
+    PrintBinaryTreeLevelWise(root);
+    delete root;
+
+}
