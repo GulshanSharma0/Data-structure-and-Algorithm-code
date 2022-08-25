@@ -1,0 +1,84 @@
+//count node in Bnary Tree
+//  1 2 3 4 5 6 7 -1 -1 -1 -1 8 9 -1 -1 -1 -1 -1 -1 
+
+
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+
+#include<iostream>
+using namespace std;
+#include "BinaryTreeclass.cpp"
+#include<queue>
+void PrintBinaryTreeLevelWise(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    queue<BinaryTree<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        if(front->left!=nullptr){
+            cout<<"L"<<front->left->data;
+            pendingnodes.push(front->left);
+        }
+        if(front->right!=nullptr){
+            cout<<"R"<<front->right->data;
+            pendingnodes.push(front->right);
+        }
+        cout<<endl;
+    }
+}
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+int countNodesInBinaryTree(BinaryTree<int>* root){               //countnode in binary Tree
+    if(root==nullptr){
+        return 0;
+    }
+    return 1+countNodesInBinaryTree(root->left)+countNodesInBinaryTree(root->right);
+}
