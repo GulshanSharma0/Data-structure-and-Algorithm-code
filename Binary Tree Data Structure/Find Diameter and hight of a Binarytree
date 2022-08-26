@@ -1,0 +1,46 @@
+// Find Diameter and hight of a Binarytree  
+/**
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+****/
+pair<int,int> hightDiameter(BinaryTree<int>* root){
+    if(root==nullptr){
+     pair<int,int>p;
+     p.first=0;
+     p.second=0;
+     return p;
+    }
+    pair<int,int> leftAns=hightDiameter(root->left);
+    pair<int,int> rightAns=hightDiameter(root->right); 
+    int lh=leftAns.first;
+    int ld=leftAns.second;
+    int rh=rightAns.first;
+    int rd=rightAns.second;
+    
+    int hight=1+max(lh,rh);
+    int diameter=max(lh+rh,max(ld,rd));
+    pair<int,int>p;
+    p.first=hight;
+    p.second=diameter;
+    return p;
+}
+ BinaryTree<int>* root=takeinputlevelwise();
+    PrintBinaryTreeLevelWise(root);
+    pair<int,int> p=hightDiameter(root);
+    cout<<"Hight= "<<p.first<<" "<<endl<<"Diameter= "<<p.second<<endl;
+    delete root;
+}
