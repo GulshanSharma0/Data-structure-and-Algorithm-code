@@ -1,0 +1,171 @@
+/*
+Coding Problem
+Problem Statement: Construct Tree from postorder  inorder
+Problem Level: MEDIUM
+Problem Description:
+For a given postorder and inorder traversal of a Binary Tree of type integer stored in an array/list, create the binary tree using the given two arrays/lists. You just need to construct the tree and return the root.
+Note:
+Assume that the Binary Tree contains only unique elements.
+
+Input Format:
+The first line of input contains an integer N denoting the size of the list/array. It can also be said that N is the total number of nodes the binary tree would have.
+
+The second line of input contains N integers, all separated by a single space. It represents the Postorder-traversal of the binary tree.
+
+The third line of input contains N integers, all separated by a single space. It represents the inorder-traversal of the binary tree.
+
+Output Format:
+The given input tree will be printed in a level order fashion where each level will be printed on a new line. 
+Elements on every level will be printed in a linear fashion. A single space will separate them.
+
+Constraints:
+1 <= N <= 10^4
+Where N is the total number of nodes in the binary tree.
+
+Time Limit: 1 sec
+
+Sample Input 1:
+7
+4 5 2 6 7 3 1 
+4 2 5 1 6 3 7
+
+Sample Output 1:
+1 
+2 3 
+4 5 6 7
+
+Sample Input 2:
+6
+2 9 3 6 10 5 
+2 6 3 9 5 10
+
+Sample Output 2:
+5 
+6 10 
+2 3 
+9
+
+*/
+
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+#include<iostream>
+using namespace std;
+#include "BinaryTreeclass.cpp"
+#include<queue>
+//  1 2 3 4 5 6 7 -1 -1 -1 -1 8 9 -1 -1 -1 -1 -1 -1 
+void PrintBinaryTreeLevelWise(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    queue<BinaryTree<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        if(front->left!=nullptr){
+            cout<<"L"<<front->left->data;
+            pendingnodes.push(front->left);
+        }
+        if(front->right!=nullptr){
+            cout<<"R"<<front->right->data;
+            pendingnodes.push(front->right);
+        }
+        cout<<endl;
+    }
+}
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+
+BinaryTree<int>* BuildTreePostInHelper(int *post,int *in,int postS,int postE,int inS,int inE){
+    if(postS>postE){
+        return nullptr;
+    }
+    int rootData=post[postE];
+    int rootIndex=-1;
+    for(int i=inS;i<=inE;i++) {
+        if(in[i]==rootData){
+            rootIndex=i;
+            break;
+        }
+    } 
+    int LpostS=postS;
+    int LinS=inS;
+    int LinE=rootIndex-1;
+    int LpostE=LinE-LinS+LpostS;
+    
+    int RpostS=LpostE+1;
+    int RpostE=postE-1;
+    int RinS=rootIndex+1;
+    int RinE=inE;
+
+    BinaryTree<int>* root=new BinaryTree<int>(rootData);
+    root->left=BuildTreePostInHelper(post,in,LpostS,LpostE,LinS,LinE);
+    root->right=BuildTreePostInHelper(post,in,RpostS,RpostE,RinS,RinE);
+    return root;
+}
+BinaryTree<int>* BuildTreePostIn(int *post,int *in,int postlength,int inLength){
+    return BuildTreePostInHelper(post,in,0,postlength-1,0,inLength-1);
+}
+int main(){
+    int length;
+    cout<<"Enter Length of the array "<<endl;
+    cin>>length;
+    int arr1[length];
+    int arr2[length];
+    for(int i=0;i<length;i++){
+        cin>>arr1[i];
+    }
+    for(int i=0;i<length;i++){
+        cin>>arr2[i];
+    }
+    BinaryTree<int>* root=BuildTreePostIn(arr1,arr2,length,length);
+    PrintBinaryTreeLevelWise(root);
+    delete root;
+
+}
