@@ -1,0 +1,130 @@
+/*
+*
+Chapter Assignment
+Problem Statement: Remove Leaf nodes
+Problem Level: EASY
+Problem Description:
+Remove all leaf nodes from a given Binary Tree. Leaf nodes are those nodes, which don't have any children.
+Note : Root will also be a leaf node if it doesn't have left and right child. You don't need to print the tree, just remove all leaf nodes and return the updated root.
+Input format :
+Elements in level order form (separated by space)
+(If any node does not have left or right child, take -1 in its place)
+Output Format :
+Elements are printed level wise, each level in new line (separated by space).
+
+Sample Input :
+8 3 10 1 6 -1 14 -1 -1 4 7 13 -1 -1 -1 -1 -1 -1 -1
+
+Sample Output :
+8
+3 10
+6 14
+
+*
+*/
+
+/*template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};*/
+#include<iostream>
+using namespace std;
+#include "BinaryTreeclass.cpp"
+#include<queue>
+
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+
+void printLevelWiseTraversal(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    queue<BinaryTree<int>*>q;
+    q.push(root);
+    q.push(nullptr);
+    while(q.size()!=0){
+       BinaryTree<int>* curr=q.front();
+       q.pop();
+      if(curr==nullptr){
+        if(q.empty()){
+            break;
+        }
+        cout<<endl;
+        q.push(nullptr);
+      }
+      else{
+        cout<<curr->data<<" ";
+        if(curr->left!=nullptr){
+            q.push(curr->left);
+        }
+        if(curr->right!=nullptr){
+            q.push(curr->right);
+        }
+      }
+    }
+}
+
+BinaryTree<int>* removeleafnode(BinaryTree<int>* root){
+    if(root==nullptr){
+        return nullptr;
+    }
+    if(root->left==nullptr && root->right==nullptr){
+        delete root;
+        return nullptr;
+    }
+    if(root->left)
+        root->left=removeleafnode(root->left);
+    if(root->right)
+        root->right=removeleafnode(root->right);
+   return root;
+}
+int main() {
+    BinaryTree<int>* root=takeinputlevelwise();
+    PrintBinaryTreeLevelWise(root);
+    BinaryTree<int>* ans=removeleafnode(root);
+    cout<<endl;
+    printLevelWiseTraversal(ans);
+    delete root;
+    }
