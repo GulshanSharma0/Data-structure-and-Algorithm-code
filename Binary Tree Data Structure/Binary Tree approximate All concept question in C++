@@ -1,0 +1,467 @@
+#include<iostream>
+#include<climits>
+using namespace std; 
+#include "BinaryTreeclass.cpp"
+#include<queue>
+#include<vector>
+#include<stack>
+
+/*template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};*/
+//  1 2 3 4 5 6 7 -1 -1 -1 -1 8 9 -1 -1 -1 -1 -1 -1 
+void PrintBinaryTreeLevelWise(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    queue<BinaryTree<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        if(front->left!=nullptr){
+            cout<<"L"<<front->left->data;
+            pendingnodes.push(front->left);
+        }
+        if(front->right!=nullptr){
+            cout<<"R"<<front->right->data;
+            pendingnodes.push(front->right);
+        }
+        cout<<endl;
+    }
+}
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+int countNodesInBinaryTree(BinaryTree<int>* root){
+   //countnode in binary Tree
+    if(root==nullptr){
+        return 0;
+    }
+    return 1+countNodesInBinaryTree(root->left)+countNodesInBinaryTree(root->right);
+}
+bool isNodePresent(BinaryTree<int>* root,int k) {
+    //For a given Binary Tree of type integer and a number X, find whether a node exists in the tree with data X or not
+    if(root==nullptr){
+        return 0;
+    }
+    if(root->data==k){
+        return true;
+    }
+    bool res1=isNodePresent(root->left,k);
+    if(res1){
+        return true;
+    }
+    bool res2=isNodePresent(root->right,k);
+    return res2;
+}
+int HightOfABinaryTree(BinaryTree<int>* root){
+    if(root==nullptr){
+        return -1;
+    }
+    int left=HightOfABinaryTree(root->left);
+    int right=HightOfABinaryTree(root->right);
+    if(left>right)
+        return left+1;
+    else
+        return right+1;
+     
+}
+void mirrorBinaryTree(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    mirrorBinaryTree(root->left);
+    mirrorBinaryTree(root->right);
+    BinaryTree<int>* temp;
+    temp=root->left;
+    root->left=root->right;
+    root->right=temp;
+
+}
+void printInOrderBinaryTree(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    printInOrderBinaryTree(root->left);
+    cout<<root->data<<" ";
+    printInOrderBinaryTree(root->right);
+}
+void printPreOrderBinaryTree(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    cout<<root->data<<" ";
+    printPreOrderBinaryTree(root->left);
+    printPreOrderBinaryTree(root->right);
+}
+void printPostOrderBinaryTree(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    cout<<root->data<<" ";
+    printPostOrderBinaryTree(root->right);
+    printPostOrderBinaryTree(root->left);
+}
+BinaryTree<int>* BuildTreePreInHelper(int *pre,int* in,int sin,int Ein,int spre,int Epre){
+     if(sin>Ein){
+        return nullptr;
+     }
+     int rootdata=pre[spre];
+     int rootIndex=-1;
+     for(int i=sin;i<=Ein;i++){
+        if(in[i]==rootdata){
+            rootIndex=i;
+            break;
+        }
+     }
+     int LinS=sin;                   //Left inorder start
+     int LinE=rootIndex-1;           //Left in Order end
+     int LpreS=spre+1;               //left preOrder start 
+     int LpreE=LinE-LinS+LpreS;      //Left preorder End
+     int RinS=rootIndex+1;           //Right Inorder Start
+     int RinE=Ein;                   // Right inorder End
+     int RpreS=LpreE+1;              // Right Preorder Start
+     int RpreE=Epre;                 //Right Preorder End
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     root->left=BuildTreePreInHelper(pre,in,LinS,LinE,LpreS,LpreE);
+     root->right=BuildTreePreInHelper(pre,in,RinS,RinE,RpreS,RpreE);
+     return root; 
+
+}
+BinaryTree<int>* BuildTreePreIn(int *pre,int *inorder,int prelength,int inlength){
+    return BuildTreePreInHelper(pre,inorder,0,inlength-1,0,prelength-1);
+}
+BinaryTree<int>* BuildTreePostInHelper(int *post,int *in,int postS,int postE,int inS,int inE){
+    if(postS>postE){
+        return nullptr;
+    }
+    int rootData=post[postE];
+    int rootIndex=-1;
+    for(int i=inS;i<=inE;i++) {
+        if(in[i]==rootData){
+            rootIndex=i;
+            break;
+        }
+    } 
+    int LpostS=postS;
+    int LinS=inS;
+    int LinE=rootIndex-1;
+    int LpostE=LinE-LinS+LpostS;
+    
+    int RpostS=LpostE+1;
+    int RpostE=postE-1;
+    int RinS=rootIndex+1;
+    int RinE=inE;
+
+    BinaryTree<int>* root=new BinaryTree<int>(rootData);
+    root->left=BuildTreePostInHelper(post,in,LpostS,LpostE,LinS,LinE);
+    root->right=BuildTreePostInHelper(post,in,RpostS,RpostE,RinS,RinE);
+    return root;
+}
+BinaryTree<int>* BuildTreePostIn(int *post,int *in,int postlength,int inLength){
+    return BuildTreePostInHelper(post,in,0,postlength-1,0,inLength-1);
+}
+int Hight(BinaryTree<int>* root){
+    if(root==nullptr){
+        return 0;
+    }
+    return 1+max(Hight(root->left),Hight(root->right));
+}
+pair<int,int> hightDiameter(BinaryTree<int>* root){
+    if(root==nullptr){
+     pair<int,int>p;
+     p.first=0;
+     p.second=0;
+     return p;
+    }
+    pair<int,int> leftAns=hightDiameter(root->left);
+    pair<int,int> rightAns=hightDiameter(root->right); 
+    int lh=leftAns.first;
+    int ld=leftAns.second;
+    int rh=rightAns.first;
+    int rd=rightAns.second;
+    
+    int hight=1+max(lh,rh);
+    int diameter=max(lh+rh,max(ld,rd));
+    pair<int,int>p;
+    p.first=hight;
+    p.second=diameter;
+    return p;
+}
+pair<int,int> findMinMaxInBinaryTree(BinaryTree<int>* root){
+    if(root==nullptr){
+        pair<int,int>p;
+        p.first=INT_MAX;
+        p.second=INT_MIN;
+        return p;
+    }
+    int maxi=root->data;
+    int mini=root->data;
+    pair<int,int> leftans=findMinMaxInBinaryTree(root->left);
+    pair<int,int> rightans=findMinMaxInBinaryTree(root->right);
+
+    int lmin=leftans.first;
+    int rmin=rightans.first;
+    int lmax=leftans.second;
+    int rmax=rightans.second;
+    
+    pair<int,int>p;
+    p.first=min(mini,min(lmin,rmin));
+    p.second=max(maxi,max(rmax,lmax));
+    return p;
+    
+}
+int findSumOfAllNode(BinaryTree<int>* root){
+    if(root==nullptr){
+        return 0;
+    }
+    int ans=root->data;
+    ans+=findSumOfAllNode(root->left);
+    ans+=findSumOfAllNode(root->right);
+    return ans;
+}
+bool checkBalancedBinaryTree(BinaryTree<int>* root){       //This function for check Balanced Tree But this functions takes more Timecomplexity ->O(n*HT);
+    if(root==nullptr){
+        return true;
+    }
+    int hight=abs(Hight(root->left)-Hight(root->right));
+    if(hight>1){
+        return false;
+    }
+    bool a=checkBalancedBinaryTree(root->left);
+    bool b=checkBalancedBinaryTree(root->right);
+    return a&&b;
+}
+pair<bool,int> IsBalanceBinaryTree(BinaryTree<int>* root){
+    if(root==nullptr){
+        pair<bool,int>ans;
+        ans.first=true;
+        ans.second=0;
+        return ans;       
+    }
+    pair<bool,int> leftcheck=IsBalanceBinaryTree(root->left);
+    pair<bool,int> rightcheck=IsBalanceBinaryTree(root->right);
+    bool lc=leftcheck.first;
+    bool rc=rightcheck.first;
+    int lh=leftcheck.second;
+    int rh=rightcheck.second;
+    pair<bool,int> ans;
+    if(lc==false||rc==false){
+        ans.first=false;
+        ans.second=1+max(lh,rh);
+        return ans;
+    }
+    if(lc==true&&rc==true){
+        if(abs(lh-rh)<=1){
+            ans.first=true;
+            ans.second=1+max(lh,rh);
+            return ans;
+        }
+        else{
+            ans.first=false;
+            ans.second=1+max(lh,rh);
+            return ans;
+        }
+    }
+}
+void printLevelWiseTraversal(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    queue<BinaryTree<int>*>q;
+    q.push(root);
+    q.push(nullptr);
+    while(q.size()!=0){
+       BinaryTree<int>* curr=q.front();
+       q.pop();
+      if(curr==nullptr){
+        if(q.empty()){
+            break;
+        }
+        cout<<endl;
+        q.push(nullptr);
+      }
+      else{
+        cout<<curr->data<<" ";
+        if(curr->left!=nullptr){
+            q.push(curr->left);
+        }
+        if(curr->right!=nullptr){
+            q.push(curr->right);
+        }
+      }
+    }
+}
+BinaryTree<int>* removeleafnode(BinaryTree<int>* root){
+    if(root==nullptr){
+        return nullptr;
+    }
+    if(root->left==nullptr && root->right==nullptr){
+        delete root;
+        return nullptr;
+    }
+    if(root->left)
+        root->left=removeleafnode(root->left);
+    if(root->right)
+        root->right=removeleafnode(root->right);
+   return root;
+}
+template <typename T>
+class Node{
+    public:
+    T data;
+    Node *next;
+    Node(T data){
+        this->data=data;
+        next=nullptr;   
+    }
+};
+vector<Node<int>*> binaryTreeToLinkList(BinaryTree<int>* root){
+    vector<Node<int>*> v;
+    if(root==nullptr){
+        v.push_back(nullptr);
+        return v;
+    }
+    queue<BinaryTree<int>*>q;
+    q.push(root);
+    q.push(nullptr);
+    Node<int>* head=nullptr;
+    Node<int>* tail=nullptr;
+    while(q.size()!=0){
+        BinaryTree<int>* curr=q.front();
+        q.pop();
+        if(curr==nullptr){
+            tail->next=nullptr;
+            if(q.empty()){
+                break;
+            }
+            v.push_back(nullptr);
+            q.push(nullptr);
+            cout<<endl;
+            head=nullptr;
+            tail=nullptr;
+        }
+        else{
+            Node<int>* n=new Node<int>(curr->data);
+            if(head==nullptr && tail==nullptr){
+                head=n;
+                tail=n;
+                v.push_back(head);
+                
+            }
+            else{
+                tail->next=n;
+                tail=n;
+
+            }
+            if(curr->left!=nullptr){
+                q.push(curr->left);
+            }
+            if(curr->right!=nullptr){
+                q.push(curr->right);
+            }
+        }
+    }
+    return v;
+}
+void ZigZag(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    stack<BinaryTree<int>*>s1;
+    s1.push(root);
+    stack<BinaryTree<int>*>s2;
+    while(s1.size()!=0||s2.size()!=0){
+        while(s1.size()!=0){
+            BinaryTree<int>* ans=s1.top();
+            s1.pop();
+            cout<<ans->data<<" ";
+            if(ans->left)
+                s2.push(ans->left);
+            if(ans->right)
+                s2.push(ans->right);
+        }
+        cout<<endl;
+        while(s2.size()!=0){
+             BinaryTree<int>* ans=s2.top();
+             cout<<ans->data<<" ";
+             s2.pop();
+             if(ans->right)
+                 s1.push(ans->right);
+             if(ans->left)
+                 s1.push(ans->left);
+        }
+        cout<<endl;
+    }
+}
+void printNodeWithoutSiblings(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    if(root->right!=nullptr && root->left==nullptr){
+        cout<<root->right->data<<" ";
+        printNodeWithoutSiblings(root->right);
+    }
+    else if(root->right==nullptr && root->left!=nullptr){
+        cout<<root->left->data<<" ";
+        printNodeWithoutSiblings(root->left);
+    } 
+    else{ 
+    printNodeWithoutSiblings(root->left);
+    printNodeWithoutSiblings(root->right);
+    }
+}
+//2 3 4 5 6 7 -1 -1 -1 -1 8 9 -1 -1 -1 -1 -1 -1 
+int main(){
+    BinaryTree<int>* root=takeinputlevelwise();
+    PrintBinaryTreeLevelWise(root);
+    cout<<endl;
+    printLevelWiseTraversal(root);
+    cout<<endl<<endl;
+    printNodeWithoutSiblings(root);
+    delete root;
+}
