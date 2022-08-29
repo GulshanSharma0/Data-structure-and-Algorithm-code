@@ -1,0 +1,76 @@
+/**
+*
+
+Chapter Assignment
+Problem Statement: ZigZag tree
+Problem Level: HARD
+Problem Description:
+Given a binary tree, print the zig zag order i.e print level 1 from left to right, level 2 from right to left and so on. This means odd levels should get printed from left to right and even level right to left.
+Input format :
+Elements in level order form (separated by space)
+(If any node does not have left or right child, take -1 in its place)
+Output Format :
+Elements are printed level wise, each level in new line (separated by space).
+
+Sample Input :
+5 6 10 2 3 -1 -1 -1 -1 -1 9 -1 -1
+
+Sample Output :
+5
+10 6
+2 3
+9
+
+
+*
+**/
+
+
+/*template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};*/
+
+
+void ZigZag(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    stack<BinaryTree<int>*>s1;
+    s1.push(root);
+    stack<BinaryTree<int>*>s2;
+    while(s1.size()!=0||s2.size()!=0){
+        while(s1.size()!=0){
+            BinaryTree<int>* ans=s1.top();
+            s1.pop();
+            cout<<ans->data<<" ";
+            if(ans->left)
+                s2.push(ans->left);
+            if(ans->right)
+                s2.push(ans->right);
+        }
+        cout<<endl;
+        while(s2.size()!=0){
+             BinaryTree<int>* ans=s2.top();
+             cout<<ans->data<<" ";
+             s2.pop();
+             if(ans->right)
+                 s1.push(ans->right);
+             if(ans->left)
+                 s1.push(ans->left);
+        }
+        cout<<endl;
+    }
+}
