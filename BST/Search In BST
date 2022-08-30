@@ -1,0 +1,78 @@
+#include<iostream>
+#include<climits>
+using namespace std; 
+#include<queue>
+#include<vector>
+#include<stack>
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+bool searchInBST(BinaryTree<int>* root,int x){
+    if(root==nullptr){
+        return false;
+    }
+    if(root->data==x){
+        return true;
+    }
+    if(root->data>x){
+        return searchInBST(root->left,x);
+    }
+    if(root->data<x){
+       return searchInBST(root->right,x);
+    }
+    
+}
+int main(){
+    BinaryTree<int>* root=takeinputlevelwise();
+    int x;
+    cin>>x;
+    //BinaryTree<int>* ans =
+    cout<<searchInBST(root,x)<<endl;
+    delete root;
+
+}
