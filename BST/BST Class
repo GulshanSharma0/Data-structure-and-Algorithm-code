@@ -1,0 +1,161 @@
+/*
+
+Coding Problem
+Problem Statement: BST Class
+Problem Level: MEDIUM
+Problem Description:
+Implement the BST class which includes following functions -
+1. search
+Given an element, find if that is present in BST or not. Return true or false.
+2. insert -
+Given an element, insert that element in the BST at the correct position. Assume unique elements will be given.
+3. delete -
+Given an element, remove that element from the BST. If the element which is to be deleted has both children, replace that with the minimum element from right sub-tree.
+4. printTree (recursive) -
+Print the BST in ithe following format -
+For printing a node with data N, you need to follow the exact format -
+N:L:x,R:y
+
+wherer, N is data of any node present in the binary tree. x and y are the values of left and right child of node N. Print the children only if it is not null.
+There is no space in between.
+You need to print all nodes in the recursive format in different lines.
+
+
+
+*/
+
+
+
+#include<queue>
+#include<iostream>
+#include "BinaryTreeclass.h"
+using namespace std;
+class BST{
+    BinaryTree<int>* root;
+    public:
+    BST(){
+        root=nullptr;
+    }
+    ~BST(){
+        delete root;
+    }
+   private:
+    BinaryTree<int>* deleteData(int data,BinaryTree<int>* node){
+        if(node==nullptr){
+            return nullptr; 
+        }
+        if(data>node->data){
+            node->right=deleteData(data,node->right);
+        }else if(data<node->data){
+            node->left=deleteData(data,node->left);
+        }
+        else{
+            if(node->left==nullptr && node->right==nullptr){
+                delete node;
+                return nullptr;
+            }
+            else if(node->left==nullptr){
+                BinaryTree<int>* temp=node->right;
+                node->right=nullptr;
+                delete node;
+                return temp;
+            }
+            else if(node->right==nullptr){
+                BinaryTree<int>* temp=node->left;
+                node->left=nullptr;
+                delete node;
+                return temp;
+            }
+            else{
+                BinaryTree<int>* minnode=node->right;
+                while(minnode->left!=nullptr){
+                    minnode=minnode->left;
+                }
+                int rightmin=minnode->data;
+                node->data=rightmin;
+                node->right=deleteData(rightmin,node->right);
+                return node;
+            }
+        }
+    }
+    private:
+    void PrintBinaryTreeLevelWise(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    queue<BinaryTree<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        if(front->left!=nullptr){
+            cout<<"L"<<front->left->data;
+            pendingnodes.push(front->left);
+        }
+        if(front->right!=nullptr){
+            cout<<"R"<<front->right->data;
+            pendingnodes.push(front->right);
+        }
+        cout<<endl;
+    }
+}
+    public:
+    void deleteData(int data){
+        root=deleteData(data,root);
+    }
+    void printBinaryTree(){
+        PrintBinaryTreeLevelWise(root);
+    }
+    private:
+    BinaryTree<int>* insert(int data, BinaryTree<int>* node){
+        if(node==nullptr){
+            BinaryTree<int>* newnode=new BinaryTree<int>(data);
+            return newnode;
+        }
+        if(data<node->data){
+            node->left=insert(data,node->left);
+        }else{
+            node->right=insert(data,node->right);
+        }
+        return node;
+        
+    }
+    public:
+    void insert(int data){
+        this->root=insert(data,this->root);
+    }
+    private:
+    bool hasData(int data,BinaryTree<int>* node){
+        if(node==NULL){
+            return false;
+        }
+        if(node->data==data){
+            return true;
+        }
+        else if(node->data>data){
+            return hasData(data,node->left);
+        }
+        else{
+            return hasData(data,node->right);
+        }
+    }
+    public:
+    bool hasData(int data){
+       return hasData(data,root);
+    }
+};
+int main(){
+    BST b;
+    b.insert(10);
+    b.insert(5);
+    b.insert(20);
+    b.insert(3);
+    b.insert(7);
+    b.insert(15);
+    b.printBinaryTree();
+    b.deleteData(10);
+    b.printBinaryTree();
+
+ 
+}
