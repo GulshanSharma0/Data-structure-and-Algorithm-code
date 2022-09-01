@@ -1,0 +1,116 @@
+/*
+Coding Problem
+Problem Statement: Find path in BST
+Problem Level: MEDIUM
+Problem Description:
+Given a BST and an integer k. Find and return the path from the node with data k and root (if a node with data k is present in given BST) in a list. Return empty list otherwise.
+Note: Assume that BST contains all unique elements.
+Input Format :
+The first line of input contains data of the nodes of the tree in level order form. The data of the nodes of the tree is separated by space. If any node does not have left or right child, take -1 in its place. Since -1 is used as an indication whether the left or right nodes exist, therefore, it will not be a part of the data of any node.   
+The following line of input contains an integer, that denotes the value of k.
+
+Output Format :
+The first line and only line of output prints the data of the nodes in the path from node k to root. The data of the nodes is separated by single space.
+
+Constraints:
+Time Limit: 1 second
+
+Sample Input 1:
+8 5 10 2 6 -1 -1 -1 -1 -1 7 -1 -1
+2
+
+Sample Output 1:
+2 5 8
+
+*/
+
+
+#include<iostream>
+#include<climits>
+using namespace std; 
+#include<queue>
+#include<vector>
+#include<stack>
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+vector<int>* getRootToNodePath(BinaryTree<int>* root,int data){
+    if(root==nullptr){
+        return nullptr;
+    }
+    if(root->data==data){
+        vector<int>* output=new vector<int>();
+        output->push_back(root->data);
+        return output;
+    }
+    vector<int>* leftOutput=getRootToNodePath(root->left,data);
+    if(leftOutput!=nullptr){
+        leftOutput->push_back(root->data);
+        return leftOutput;
+    }
+    vector<int>* rightOutput=getRootToNodePath(root->right,data);
+    if(rightOutput!=nullptr){
+        rightOutput->push_back(root->data);
+        return rightOutput;
+    }
+    else{
+        return nullptr;
+    }
+}
+
+
+
+int main(){
+    BinaryTree<int>* root=takeinputlevelwise();
+    vector<int>* output=getRootToNodePath(root,8);
+    for(int i=0;i<output->size();i++){
+        cout<<output->at(i)<<endl;
+    }
+    delete root;
+    delete output;
+}
