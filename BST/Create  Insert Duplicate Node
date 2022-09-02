@@ -1,0 +1,161 @@
+/*
+
+Chapter Assignment
+Problem Statement: Create  Insert Duplicate Node
+Problem Level: EASY
+Problem Description:
+For a given a Binary Tree of type integer, duplicate every node of the tree and attach it to the left of itself.
+The root will remain the same. So you just need to insert nodes in the given Binary Tree.
+Example:
+
+After making the changes to the above-depicted tree, the updated tree will look like this.
+
+
+You can see that every node in the input tree has been duplicated and inserted to the left of itself.
+
+Input format :
+The first and the only line of input will contain the node data, all separated by a single space. Since -1 is used as an indication whether the left or right node data exist for root, it will not be a part of the node data.
+
+Output Format :
+The updated tree will be printed in a level order fashion where each level will be printed on a new line. 
+Elements on every level will be printed in a linear fashion. A single space will separate them.
+
+Note:
+You are not required to print anything explicitly. It has already been taken care of. Just implement the function to achieve the desired structure of the tree.
+
+Constraints :
+1 <= N <= 10^5
+Where N is the total number of nodes in the binary tree.
+
+Time Limit: 1 sec
+
+Sample Input 1:
+10 20 30 40 50 -1 60 -1 -1 -1 -1 -1 -1
+
+Sample Output 1:
+10 
+10 30 
+20 30 60 
+20 50 60 
+40 50 
+40
+
+Sample Input 2:
+8 5 10 2 6 -1 -1 -1 -1 -1 7 -1 -1
+
+Sample Output 2:
+8 
+8 10 
+5 10 
+5 6 
+2 6 7 
+2 7
+
+
+
+*/
+
+
+
+
+#include<iostream>
+#include<queue>
+#include<vector>
+using namespace std;
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+
+void PrintBinaryTreeLevelWise(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    queue<BinaryTree<int>*>pendingnodes;
+    pendingnodes.push(root);
+    while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<front->data<<":";
+        if(front->left!=nullptr){
+            cout<<"L"<<front->left->data;
+            pendingnodes.push(front->left);
+        }
+        if(front->right!=nullptr){
+            cout<<"R"<<front->right->data;
+            pendingnodes.push(front->right);
+        }
+        cout<<endl;
+    }
+}
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+void insertDuplicateInBinaryTree(BinaryTree<int>* root){
+    if(root==nullptr){
+        return;
+    }
+    BinaryTree<int>* duplicate=new BinaryTree<int>(root->data);
+    duplicate->left=root->left;
+    root->left=duplicate;
+    insertDuplicateInBinaryTree(duplicate->left);
+    insertDuplicateInBinaryTree(root->right);
+
+}
+void printpreorder(BinaryTree<int>* root){
+    if(root==NULL){
+        return;
+    }
+    cout<<root->data<<" ";
+    printpreorder(root->left);
+    printpreorder(root->right);
+}
+int main(){
+     BinaryTree<int>* root=takeinputlevelwise();
+     PrintBinaryTreeLevelWise(root);
+     insertDuplicateInBinaryTree(root);
+     PrintBinaryTreeLevelWise(root);
+     printpreorder(root);
+     delete root;
+}
