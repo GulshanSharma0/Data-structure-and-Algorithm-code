@@ -1,0 +1,131 @@
+
+/*
+
+Chapter Assignment
+Problem Statement: LCA of Binary Tree
+Problem Level: MEDIUM
+Problem Description:
+Given a binary tree and two nodes, find LCA (Lowest Common Ancestor) of the given two nodes in Binary Tree. Read about LCA if you are having doubts about the definition.
+If out of 2 nodes only one node is present, return that node.
+If both are not present, return -1.
+Input format :
+Line 1 :  Elements in level order form (separated by space)
+(If any node does not have left or right child, take -1 in its place)
+Line 2 : Two integers, Node 1 and Node 2 (separated by space)
+
+Output Format :
+LCA
+
+Constraints :
+1 <= N <= 1000
+
+Sample Input 1:
+5 10 6 2 3 -1 -1 -1 -1 -1 9 -1 -1
+2 10
+
+Sample Output 1:
+10
+
+Sample Input 2:
+5 10 6 2 3 -1 -1 -1 -1 -1 9 -1 -1
+2 6
+
+Sample Output 2:
+5
+
+Sample Input 3:
+5 10 6 2 3 -1 -1 -1 -1 -1 9 -1 -1
+12 78
+
+Sample Output 3:
+-1
+
+
+*/
+
+
+#include<iostream>
+#include<queue>
+#include<vector>
+#include<algorithm>
+using namespace std;
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+int LCA(BinaryTree<int>* root,int a,int b){
+    if(root==nullptr){
+        return -1;
+    }
+    if(a==root->data||b==root->data){
+        return root->data;
+    }
+    int first=LCA(root->left,a,b);
+    int second=LCA(root->right,a,b);
+    if(first==-1 && second!=-1){
+        return second;
+    }
+    else if(first!=-1 && second==-1){
+        return first;
+    }
+    else if(first!=-1&&second!=-1){
+        return root->data;
+    }
+    else {
+        return -1;
+    }
+
+}
+int main(){
+    BinaryTree<int>* root=takeinputlevelwise();
+    int a,b;
+    cin>>a>>b;
+    cout<<LCA(root,a,b);
+    delete root;
+    return 0;
+}
+
