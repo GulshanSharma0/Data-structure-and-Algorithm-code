@@ -1,0 +1,128 @@
+/*
+
+Chapter Assignment
+Problem Statement: Pair sum BInary Tree
+Problem Level: MEDIUM
+Problem Description:
+Given a binary tree and an integer S, print all the pair of nodes whose sum equals S.
+Assume binary tree contains all unique elements.
+Note : In a pair, print the smaller element first. Order of different pair doesn't matter.
+Input format :
+Line 1 : Elements in level order form (separated by space)
+(If any node does not have left or right child, take -1 in its place)
+Line 2 : Integer S
+
+Output Format :
+Each pair in different line (pair elements separated by space)
+
+Constraints :
+1 <= N <= 1000
+
+Sample Input 1:
+5 10 6 2 3 -1 -1 -1 -1 -1 9 -1 -1
+15
+
+Sample Output 1:
+5 10
+6 9
+
+
+
+*/
+
+
+
+#include<iostream>
+#include<queue>
+#include<vector>
+#include<algorithm>
+using namespace std;
+template<typename T>
+class BinaryTree{
+public:
+    T data;
+    BinaryTree* left;
+    BinaryTree* right;
+    BinaryTree(T data){
+        this->data=data;
+        left=nullptr;
+        right=nullptr;
+    }
+    ~BinaryTree(){
+        delete left;
+        delete right;
+    }
+};
+BinaryTree<int>* takeinputlevelwise() {
+     int rootdata;
+     cout<<"Enter rootData"<<endl;
+     cin>>rootdata;
+     if(rootdata==-1){
+        return nullptr;
+     }
+     BinaryTree<int>* root=new BinaryTree<int>(rootdata);
+     queue<BinaryTree<int>*>pendingnodes;
+     pendingnodes.push(root);
+     while(pendingnodes.size()!=0){
+        BinaryTree<int>* front=pendingnodes.front();
+        pendingnodes.pop();
+        cout<<"Enter Left child of "<<front->data<<endl;
+        int leftchilddata;
+        cin>>leftchilddata;
+        if(leftchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(leftchilddata);
+            front->left=child;
+            pendingnodes.push(child);
+        }
+        cout<<"Enter right child of "<<front->data<<endl;
+        int rightchilddata;
+        cin>>rightchilddata;
+        if(rightchilddata!=-1){ 
+            BinaryTree<int>* child=new BinaryTree<int>(rightchilddata);
+            front->right=child;
+            pendingnodes.push(child);
+        }
+     }
+     return root;
+}
+int k=0;
+void convert(BinaryTree<int>* root,int *arr){
+     if(root==nullptr){
+        return;
+     }
+     arr[k++]=root->data;
+     convert(root->left,arr);
+     convert(root->right,arr);
+}
+void printPairSum(BinaryTree<int>* root,int sum){
+    if(root==nullptr){ 
+        return;
+    }
+    int arr[1001];
+    convert(root,arr);
+    sort(arr,arr+k);
+    int i=0;
+    while(i<k){ 
+        if(arr[i]+arr[k]==sum){
+            cout<<arr[i]<<" "<<arr[k]<<endl;
+            i++;
+            k--;
+        }
+        else if(arr[i]+arr[k]>sum){
+            k--;
+        }
+        else if(arr[i]+arr[k]<sum){
+            i++;
+        }
+    }
+
+  
+}
+int main(){
+    BinaryTree<int>* root=takeinputlevelwise();
+    int sum;
+    cin>>sum;
+    printPairSum(root,sum);
+    delete root;
+    return 0;
+}
