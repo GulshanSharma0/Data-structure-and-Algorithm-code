@@ -1,0 +1,99 @@
+/*
+
+Coding Problem
+Problem Statement: Search Words
+Problem Level: MEDIUM
+Problem Description:
+Implement the function SearchWord for the Trie class.
+For a trie, write the function for searching a word. Return true if found successfully otherwise return false.
+Note : main function is given for your reference which we are using internally to test the code.
+
+*/
+
+
+#include "TrieNodeClass.h"
+#include<string>
+using namespace std;
+class trie{
+    TrieNode* root;
+    public:
+    trie(){
+        root=new TrieNode('\0');
+    }
+    bool searchword(TrieNode* root,string word){
+        if(word.size()==0){
+            return root->isTerminal;
+        }
+        int index=word[0]-'a';
+        TrieNode* child=nullptr;
+        if(root->children[index]!=nullptr){
+            child=root->children[index];
+        }else{
+            return false;
+        }
+        return searchword(child,word.substr(1));
+    }
+    bool searchword(string word){
+        bool ans = searchword(root,word);
+        return ans;
+    }
+    void insertWord(TrieNode *root,string word){
+        if(word.size()==0){
+            root->isTerminal=true;
+            return;
+        }
+        int index=word[0]-'a';
+        TrieNode *child=nullptr;
+        if(root->children[index]!=nullptr){
+            child=root->children[index];
+        }
+        else{
+            child=new TrieNode(word[0]);
+            root->children[index]=child;
+        }
+        insertWord(child,word.substr(1));
+    }
+    void insertWord(string word){
+         insertWord(root,word);
+    }
+    void removeWord(TrieNode* root,string word){
+        if(word.size()==0){
+            root->isTerminal=false;
+            return;
+        }
+        TrieNode* child=nullptr;
+        int index=word[0]-'a';
+        if(root->children[index]!=nullptr){
+            child=root->children[index];
+        }else{
+            return;
+        }
+        removeWord(child,word.substr(1));
+        if(child->isTerminal==false){
+            for(int i=0;i<26;i++){
+                if(child->children[i]!=nullptr){
+                     return;
+                }
+            }
+            delete child;
+            root->children[index]=nullptr;
+        }
+    }
+    void removeWord(string word){
+        removeWord(root,word);
+    }
+    };
+    #include<iostream>
+    int main(){
+    trie t;
+    t.insertWord("and");
+    t.insertWord("tre");
+    t.insertWord("dot");
+    bool ans=t.searchword("and");
+    cout<<ans<<endl;
+    t.removeWord("and");
+    cout<<t.searchword("and")<<endl;
+    cout<<t.searchword("tre");
+
+
+}
