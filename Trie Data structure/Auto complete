@@ -1,0 +1,158 @@
+/*
+*
+*
+
+Chapter Assignment
+Problem Statement: Auto complete
+Problem Level: HARD
+Problem Description:
+Given n number of words and an incomplete word w. You need to auto-complete that word w.
+That means, find and print all the possible words which can be formed using the incomplete word w.
+Note : Order of words does not matter.
+Input Format :
+The first line of input contains an integer, that denotes the value of n.
+The following line contains n space separated words.
+The following line contains the word w, that has to be auto-completed.
+
+Output Format :
+Print all possible words in separate lines.
+
+Constraints:
+Time Limit: 1 sec
+
+Sample Input 1 :
+7
+do dont no not note notes den
+no
+
+Sample Output 2 :
+no
+not
+note
+notes
+
+Sample Input 2 :
+7
+do dont no not note notes den
+de
+
+Sample Output 2 :
+den
+
+Sample Input 3 :
+7
+do dont no not note notes den
+nom
+
+Sample Output 3 :
+(Empty) There is no word which starts with "nom"
+
+*
+*/
+
+
+#include<vector>
+#include<string>
+#include<iostream>
+using namespace std;
+class TrieNode{
+    public:
+    char data;
+    bool isTerminal;
+    TrieNode **children;
+    TrieNode(char data){
+        this->data=data;
+        children=new TrieNode*[26];
+        for(int i=0;i<26;i++){
+            children[i]=NULL;
+        }
+        isTerminal=false;
+    }
+};
+
+class Trie{
+    TrieNode *root;
+    public:
+    int count;
+    Trie(){
+        this->count=0;
+        root=new TrieNode('\0');
+    }
+    bool insertWord(TrieNode *root,string word){
+        if(word.size()==0){
+            if(!root->isTerminal){
+                root->isTerminal=true;
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        int index=word[0]-'a';
+        TrieNode *child;
+        if(root->children[index]!=NULL){
+            child=root->children[index];
+        }
+        else{
+            child=new TrieNode(word[0]);
+            root->children[index]=child;
+        }
+        return insertWord(child,word.substr(1));
+    }
+    bool insertWord(string word){
+        if(insertWord(root,word)){
+            count++;
+        }
+    }
+    bool search(TrieNode *root,string word){
+        if(word.size()==0){
+            return true;
+        }
+        if(root->children[word[0]-'a']==NULL){
+            return false;
+        }
+        return search(root->children[word[0]-'a'],word.substr(1));
+    }
+    bool search(string word){
+        return search(root,word);
+    }
+    void autocomplete(TrieNode* root,string s){
+        if(root->isTerminal==true){
+            cout<<s<<endl;
+        }
+        for(int i=0;i<26;i++){
+            if(root->children[i]!=NULL){
+                char c=i+'a';
+                autocomplete(root->children[i],s+c);
+            }
+        }
+        return;
+    }
+    void autocomplete(vector<string>input,string pattern){
+        for(int i=0;i<input.size();i++){
+            insertWord(input[i]);
+        }
+        if(search(pattern)==false){
+            return;
+        }
+        string s=pattern;
+        while(pattern.size()!=0){
+            root=root->children[pattern[0]-'a'];
+            pattern=pattern.substr(1);
+        }
+        autocomplete(root,s);
+    }
+};
+int main(){
+    int size;
+    cin>>size;
+    vector<string>input(size);
+    for(int i=0;i<size;i++){
+        cin>>input[i];
+    }
+    string pattern;
+    cin>>pattern;
+    Trie t;
+    t.autocomplete(input,pattern);
+}
