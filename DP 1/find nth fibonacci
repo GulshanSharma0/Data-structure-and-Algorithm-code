@@ -1,0 +1,44 @@
+#include<iostream>
+using namespace std;
+
+int fibo_2(int n){                                //dynamic programming or buttom-up approach
+    int *arr= new int[n+1];
+     arr[0]=0;
+     arr[1]=1;
+    for(int i=2;i<=n;i++){
+        arr[i]=arr[i-1]+arr[i-2];
+    }
+    return arr[n];
+}
+int fibo(int n){                                 // 1  Brute force 
+    if(n<=1){
+        return n;
+    }
+    int a=fibo(n-1);
+    int b=fibo(n-2);
+    return a+b;
+}
+int fibo_1Helper(int n,int *arr){
+    if(n<=1){
+        return n;
+    }
+    if(arr[n]!=-1){
+        return arr[n];
+    }
+    int a=fibo_1Helper(n-1,arr);
+    int b=fibo_1Helper(n-2,arr);
+    arr[n]=a+b;
+    return arr[n];
+}
+int fibo_1(int n){                                 //2  memoization or top doen approach
+    int* arr=new int[n+1];
+    for(int i=0;i<=n;i++){
+        arr[i]=-1;
+    }
+    return fibo_1Helper(n,arr);
+}
+int main(){
+    int n;
+    cin>>n;
+    cout<<fibo_2(n);
+}
