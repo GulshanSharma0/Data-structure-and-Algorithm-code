@@ -1,0 +1,112 @@
+/*
+
+Problem Statement: Min Steps to one
+Problem Level: EASY
+Problem Description:
+Given a positive integer 'n',  find and return the minimum number of steps that 'n' has to take to get reduced to 1. You can perform any one of the following 3 steps:
+1.) Subtract 1 from it. (n = n - ­1) ,
+2.) If its divisible by 2, divide by 2.( if n % 2 == 0, then n = n / 2 ) ,
+3.) If its divisible by 3, divide by 3. (if n % 3 == 0, then n = n / 3 ).
+
+Write brute-force recursive solution for this.
+Input format :
+The first and the only line of input contains an integer value, 'n'.
+
+Output format :
+Print the minimum number of steps.
+
+Constraints :
+1 <= n <= 200
+
+Time Limit: 1 sec
+
+Sample Input  1 :
+4
+
+Sample Output  1 :
+2
+
+Explanation of Sample Output 1 :
+For n = 4
+Step 1 :  n = 4 / 2  = 2
+Step 2 : n = 2 / 2  =  1
+
+Sample Input  2 :
+7
+
+Sample Output  2 :
+3
+
+Explanation of Sample Output 2 :
+For n = 7
+Step 1 :  n = 7 ­- 1 = 6
+Step 2 : n = 6  / 3 = 2 
+Step 3 : n = 2 / 2 = 1
+
+
+*/
+
+#include<iostream>
+#include<climits>
+using namespace std;
+int minStep(int n){                                       //brute forcce
+    if(n<=1){
+        return 0;
+    }
+    int a=INT_MAX,b=INT_MAX;
+    int c=minStep(n-1);
+    if(n%3==0){
+         a=minStep(n/3);
+    }
+    if(n%2==0){
+        b=minStep(n/2);
+    }   
+    return min(a,min(b,c))+1;
+}
+int minStep_1Helper(int n,int *arr){                       //memoization and top down approach
+    if(n<=1){
+        return 0;
+    }
+    if(arr[n]!=-1){
+        return arr[n];
+    }
+    int a=minStep_1Helper(n-1,arr);
+    int b=INT_MAX,c=INT_MAX;
+    if(n%3==0){
+        b=minStep_1Helper(n/3,arr);
+    }
+    if(n%2==0){
+        c=minStep_1Helper(n/2,arr);
+    }
+    arr[n]=min(a,min(b,c))+1;
+    return arr[n];
+}
+int minStep_1(int n){
+    int* arr=new int[n+1];
+    for(int i=0;i<=n;i++){
+        arr[i]=-1;
+    }
+    return minStep_1Helper(n,arr);
+}
+int minStep_2(int n){                                              // dynamic programming buttom-up approaches
+    int* arr=new int[n+1];
+    int b,c;
+    arr[1]=0;
+    arr[2]=arr[3]=1;
+    for(int i=4;i<=n;i++){
+        b=c=n;
+        if(i%2==0){
+            b=arr[i/2];
+        }
+        if(i%3==0){
+            c=arr[i/3];
+        }
+         arr[i]=1+min(arr[i-1],min(b,c));
+    }
+    return arr[n];
+}
+int main(){
+    int n;
+    cin>>n;
+    cout<<minStep_2(n);
+}
