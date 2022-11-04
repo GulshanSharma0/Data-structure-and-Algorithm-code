@@ -1,0 +1,73 @@
+A child runs up a staircase with 'n' steps and can hop either 1 step, 2 steps or 3 steps at a time. Implement a method to count and return all possible ways
+in which the child can run-up to the stairs.
+Constraints :
+0 <= n <= 10 ^ 4
+
+Time Limit: 1 sec
+
+Sample Input 1:
+4
+
+Sample Output 1:
+7
+
+Sample Input 2:
+10
+
+Sample Output 2:
+274
+
+
+#include<iostream>
+using namespace std;
+#include<climits>
+int staircaseHopCount(int n){                    //Brute force
+    if(n<=0){
+        return 1;
+    }
+    int a=staircaseHopCount(n-1);
+    int b=0,c=0;
+    if(n>=2){ 
+       b=staircaseHopCount(n-2);
+    }if(n>=3)
+        c=staircaseHopCount(n-3);
+    return a+b+c; 
+}
+int staircaseHopCount_2Helper(int n,int *arr){
+    if(n<=0){
+        return 1;
+    }
+    if(arr[n]!=-1){
+        return arr[n];
+    }
+    int a=staircaseHopCount_2Helper(n-1,arr);
+    int b=0,c=0;
+    if(n>=2){
+       b = staircaseHopCount_2Helper(n-2,arr);
+    }
+    if(n>=3){
+        c=staircaseHopCount_2Helper(n-3,arr);
+    }
+    arr[n]=a+b+c;
+    return arr[n];
+}
+int staircaseHopCount_2(int n){                      //memoization and top down approach
+    int *arr=new int[n+1];
+    for(int i=0;i<=n;i++){
+        arr[i]=-1;
+    }
+    return staircaseHopCount_2Helper(n,arr);
+}
+int staircaseHopCount_3(int n){
+    int *arr=new int [n+1];
+    arr[0]=1,arr[1]=1,arr[2]=2;arr[3]=4;
+    for(int i=4;i<=n;i++){
+        arr[i]=arr[i-1]+arr[i-2]+arr[i-3];
+    }
+    return arr[n];
+}
+int main(){
+    int n;
+    cin>>n;
+    cout<<staircaseHopCount_3(n);
+}
