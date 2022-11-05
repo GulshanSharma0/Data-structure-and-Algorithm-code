@@ -1,0 +1,94 @@
+/*
+*
+Coding Problem
+Problem Statement: Number of balanced Binary Trees
+Problem Level: HARD
+Problem Description:
+Given an integer h, find the possible number of balanced binary trees of height h. You just need to return the count of possible binary trees which are balanced.
+This number can be huge, so return output modulus 10^9 + 7.
+Time complexity should be O(h).
+Input Format :
+Integer h
+
+Output Format :
+Count % 10^9 + 7
+
+Input Constraints :
+1 <= h <= 10^7
+
+Sample Input 1:
+3
+
+Sample Output 1:
+15
+
+Sample Input 2:
+4
+
+Sample Output 2:
+315
+
+*
+*/
+
+
+#include<iostream>
+#include<cmath>
+using namespace std;
+int numberOfBalancedBT(int h){
+    if(h<=1){
+        return 1;
+    }
+    int x= numberOfBalancedBT(h-1);
+    int y=numberOfBalancedBT(h-2);
+    int mod = (int)(pow(10,9) + 7);
+    
+    int temp1=(int) (((long long)(x)*x)%mod);
+     int temp2=(int) ((2*(long long)(x)*y)%mod);
+
+    int ans = (temp1 +temp2 ) %mod;
+    
+    return ans;
+}
+int numberOfBalanceBT_1Helper(int h,int *arr){
+    if(h<=1){
+        return 1;
+    }
+    if(arr[h]!=-1){
+        return arr[h];
+    }
+    int x= numberOfBalancedBT(h-1);
+    int y=numberOfBalancedBT(h-2);
+    int mod = (int)(pow(10,9) + 7);
+    
+    int temp1=(int) (((long long)(x)*x)%mod);
+     int temp2=(int) ((2*(long long)(x)*y)%mod);
+
+    arr[h] = (temp1 +temp2 ) %mod;
+    return arr[h];
+}
+int numberOfBalancedBT_2(int h){                                  //memoization and button up approach
+    int *arr=new int[h+1];
+    for(int i=0;i<=h;i++){
+        arr[i]=-1;
+    }
+    return numberOfBalanceBT_1Helper(h,arr);
+}
+int numberOfBalancedBT_3(int h){
+    int *arr=new int[h+1];
+    arr[0]=1;
+    arr[1]=1;
+    arr[2]=3;
+    int mod = (int)(pow(10,9) + 7);
+    for(int i=3;i<=h;i++){
+        int temp1=(int) (((long long)(arr[i-1])*arr[i-1])%mod);
+        int temp2=(int) ((2*(long long)(arr[i-1])*arr[i-2])%mod);
+        arr[i] = (temp1 +temp2 ) %mod;
+    }
+    return arr[h];
+}
+int main(){
+    int h;
+    cin>>h;
+    cout<<numberOfBalancedBT_3(h);
+}
