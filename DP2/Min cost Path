@@ -1,0 +1,138 @@
+/*
+*
+
+Coding Problem
+Problem Statement: Min cost Path
+Problem Level: MEDIUM
+Problem Description:
+An integer matrix of size (M x N) has been given. Find out the minimum cost to reach from the cell (0, 0) to (M - 1, N - 1).
+From a cell (i,  j), you can move in three directions:
+1. ((i + 1),  j) which is, "down"
+2. (i, (j + 1)) which is, "to the right"
+3. ((i+1), (j+1)) which is, "to the diagonal"
+
+The cost of a path is defined as the sum of each cell's values through which the route passes.
+Input format :
+The first line of the test case contains two integer values, 'M' and 'N', separated by a single space. They represent the 'rows' and 'columns' respectively, for the two-dimensional array/list.
+
+The second line onwards, the next 'M' lines or rows represent the ith row values.
+
+Each of the ith row constitutes 'N' column values separated by a single space.
+
+Output format :
+Print the minimum cost to reach the destination.
+
+Constraints :
+1 <= M <= 10 ^ 2
+1 <= N <=  10 ^ 2
+
+Time Limit: 1 sec
+
+Sample Input 1 :
+3 4
+3 4 1 2
+2 1 8 9
+4 7 8 1
+
+Sample Output 1 :
+13
+
+Sample Input 2 :
+3 4
+10 6 9 0
+-23 8 9 90
+-200 0 89 200
+
+Sample Output 2 :
+76
+
+Sample Input 3 :
+5 6
+9 6 0 12 90 1
+2 7 8 5 78 6
+1 6 0 5 10 -4 
+9 6 2 -10 7 4
+10 -2 0 5 5 7
+
+Sample Output 3 :
+18
+
+
+*/
+
+
+#include<iostream>
+#include<climits>
+using namespace std;
+int minCostPath(int **arr,int i, int j,int x,int y){           //Brute force 
+    if(i==x-1&&j==y-1){
+        return arr[i][j];
+    }
+    if(i>=x||j>=y){
+        return INT_MAX;
+    }
+    int a=minCostPath(arr,i,j+1,x,y);
+    int c=minCostPath(arr,i+1,j+1,x,y);
+    int b=minCostPath(arr,i+1,j,x,y);
+    return min(a,min(b,c))+arr[i][j];
+}
+int minCostPath_2_Helper(int **arr,int i, int j,int x,int y,int **output){           
+    if(i==x-1&&j==y-1){
+        return arr[i][j];
+    }
+    if(i>=x||j>=y){
+        return INT_MAX;
+    }
+    if(output[i][j]!=-1){
+        return output[i][j];
+    }
+    int a=minCostPath(arr,i,j+1,x,y);
+    int c=minCostPath(arr,i+1,j+1,x,y);
+    int b=minCostPath(arr,i+1,j,x,y);
+    output[i][j]=min(a,min(b,c))+arr[i][j];
+    return output[i][j];
+}
+int minCostPath_memo(int **arr,int i,int j,int x,int y){                   //memoization and Topdown approach                   
+    int **output=new int*[x];
+    for(int i=0;i<x;i++){
+        output[i] = new int[y];
+        for(int j=0;j<y;j++){
+            output[i][j]=-1;
+        }
+    }
+    return minCostPath_2_Helper(arr,i,j,x,y,output);
+}
+int minCostPath_DP(int **arr,int i,int j,int x,int y){
+    int **output=new int*[x];
+    for(int i=0;i<x;i++){
+        output[i]=new int[y];
+    }
+    output[x-2][y-1]=arr[x-1][y-1];
+    for(int j=y-2;j>=0;j--){
+        output[x-1][j]=output[x-1][j+1]+arr[x-1][j];
+    }
+
+    for(int i=x-2;i>=0;i--){
+        output[i][y-1] = output[i+1][y-1]+arr[i][y-1];
+    }
+    for(int i=x-2;i>=0;i--){
+        for(int j=y-2;j>=0;j--){
+            output[i][j] = min(output[i+1][j+1],min(output[i+1][j],output[i][j+1]))+arr[i][j];
+        }
+    }
+    return output[0][0];
+}
+int main(){
+     int x,y;
+     cin>>x>>y;
+     int **arr=new int*[x];
+     for(int i=0;i<x;i++){
+        arr[i]=new int[y];
+        for(int j=0;j<y;j++){
+            cin>>arr[i][j];
+        }
+     }
+     cout<<minCostPath_memo(arr,0,0,x,y)<<endl;
+     cout<<minCostPath_memo(arr,0,0,x,y);
+
+}
