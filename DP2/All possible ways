@@ -1,0 +1,67 @@
+//not sure that is 
+
+
+
+/*
+
+
+Chapter Assignment
+Problem Statement: All possible ways
+Problem Level: MEDIUM
+Problem Description:
+Given two integers a and b. You need to find and return the count of possible ways in which we can represent the number a as the sum of unique integers raise to the power b.
+For eg. if a = 10 and b = 2, only way to represent 10 as -
+10 = 1^2 + 3^2
+
+Hence, answer is 1.
+Note : x^y represents x raise to the power y
+Inout Format :
+Two integers a and b (separated by space)
+
+Output Format :
+Count
+
+Constraints :
+1 <= a <= 10^5
+1 <= b <= 50
+
+Sample Input 1 :
+10 2
+
+Sample Output 1 :
+1
+
+Sample Input 2 :
+100 2
+
+Sample Output 2 :
+3
+
+*/
+
+
+#include<iostream>
+#include<cmath>
+using namespace std;
+int mod=1e+7;
+int helper(int x, int n,int curr_num,int curr_sum){
+    int ans=0;
+    int p=pow(curr_num,n);
+    while(p+curr_sum<x){
+        ans+=helper(x,n,curr_num+1,curr_sum+p);
+        curr_num++;
+        p=pow(curr_num,n);
+    }
+    if(p+curr_sum==x){
+        ans++;
+    }
+    return ans;
+}
+int allWays(int x,int y){
+    return helper(x,y,1,0);
+}
+int main(){
+    int n1,n2;
+    cin>>n1>>n2;
+    cout<<allWays(n1,n2);
+}
